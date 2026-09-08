@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DevOps Task Manager</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>DevOps Task Manager</h1>
+        <p class="subtitle">Manage your tasks efficiently</p>
+
+        <!-- Task Summary -->
+        <div class="summary">
+
+            <div class="summary-card">
+                <h3>Total</h3>
+                <p>{{ tasks|length }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Completed</h3>
+                <p>
+                    {{ tasks|selectattr("completed")|list|length }}
+                </p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Pending</h3>
+                <p>
+                    {{ tasks|rejectattr("completed")|list|length }}
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Add Task -->
+        <form action="/add" method="POST" class="task-form">
+
+            <input
+                type="text"
+                name="task"
+                placeholder="Enter a new task..."
+                required
+            >
+
+            <button type="submit">Add Task</button>
+
+        </form>
+
+
+        <!-- Tasks -->
+        <h2>Tasks</h2>
+
+        {% if tasks %}
+
+            <div class="task-list">
+
+                {% for task in tasks %}
+
+                    <div class="task-card">
+
+                        <div class="task-info">
+
+                            {% if task.completed %}
+                                <span class="task-name completed">
+                                    {{ task.name }}
+                                </span>
+
+                                <span class="status completed-status">
+                                    Completed
+                                </span>
+
+                            {% else %}
+
+                                <span class="task-name">
+                                    {{ task.name }}
+                                </span>
+
+                                <span class="status pending-status">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            {% if not task.completed %}
+
+                                <a
+                                    href="/complete/{{ task.id }}"
+                                    class="complete-btn"
+                                >
+                                    Complete
+                                </a>
+
+                            {% endif %}
+
+                            <a
+                                href="/delete/{{ task.id }}"
+                                class="delete-btn"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-message">No tasks yet. Add your first task!</p>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
