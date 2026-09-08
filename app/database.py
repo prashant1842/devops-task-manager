@@ -1,9 +1,10 @@
+import os
 import mysql.connector
 
 
 def get_connection():
     connection = mysql.connector.connect(
-        host="mysql",
+        host=os.getenv("DB_HOST", "mysql"),
         user="root",
         password="root",
         database="devops_task_manager"
